@@ -12,6 +12,7 @@ import HomeScreen from "./navigation/HomeScreen";
 import MapScreen from "./Screens/MapScreen";
 import ComentsScreen from "./Screens/ComentsScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
+import MainNavigation from "./navigation/MainNavigarion";
 
 SplashScreen.preventAutoHideAsync();
 const MainStack = createStackNavigator();
@@ -33,56 +34,57 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <MainStack.Navigator initialRouteName="Login">
-        <MainStack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <MainStack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{
-            headerShown: false,
-            presentation: "card",
-          }}
-        />
-        <MainStack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            headerShown: false,
-            presentation: "card",
-          }}
-        />
-        <MainStack.Screen
-          name="Map"
-          component={MapScreen}
-          options={{
-            presentation: "modal",
-            title: "Мапа",
-          }}
-        />
-        <MainStack.Screen
-          name="CreatePosts"
-          component={CreatePostsScreen}
-          options={{
-            title: "Створити публікацію",
-            presentation: "modal",
-          }}
-        />
-        <MainStack.Screen
-          name="Coments"
-          component={ComentsScreen}
-          options={{
-            title: "Коментарі",
-            presentation: "modal",
-          }}
-        />
-      </MainStack.Navigator>
-    </NavigationContainer>
+    <MainNavigation />
+    //   <NavigationContainer>
+    //     <MainStack.Navigator initialRouteName="Login">
+    //       <MainStack.Screen
+    //         name="Registration"
+    //         component={RegistrationScreen}
+    //         options={{
+    //           headerShown: false,
+    //         }}
+    //       />
+    //       <MainStack.Screen
+    //         name="Login"
+    //         component={LoginScreen}
+    //         options={{
+    //           headerShown: false,
+    //           presentation: "card",
+    //         }}
+    //       />
+    //       <MainStack.Screen
+    //         name="Home"
+    //         component={HomeScreen}
+    //         options={{
+    //           headerShown: false,
+    //           presentation: "card",
+    //         }}
+    //       />
+    //       <MainStack.Screen
+    //         name="Map"
+    //         component={MapScreen}
+    //         options={{
+    //           presentation: "modal",
+    //           title: "Мапа",
+    //         }}
+    //       />
+    //       <MainStack.Screen
+    //         name="CreatePosts"
+    //         component={CreatePostsScreen}
+    //         options={{
+    //           title: "Створити публікацію",
+    //           presentation: "modal",
+    //         }}
+    //       />
+    //       <MainStack.Screen
+    //         name="Coments"
+    //         component={ComentsScreen}
+    //         options={{
+    //           title: "Коментарі",
+    //           presentation: "modal",
+    //         }}
+    //       />
+    //     </MainStack.Navigator>
+    //   </NavigationContainer>
   );
 }

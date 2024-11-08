@@ -7,7 +7,6 @@ import HomeIcon from "../icons/homeIcon";
 import LogoutIcon from "../icons/logoutIcon";
 import PostsScreen from "../Screens/PostsScreen";
 import { useNavigation } from "@react-navigation/native";
-import MapScreen from "../Screens/MapScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 
 const Tab = createBottomTabNavigator();
