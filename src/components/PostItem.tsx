@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { colors } from "../styles/global";
+import { colors } from "../../styles/global";
 
 const PostItem = () => {
   const navigation = useNavigation();
@@ -14,7 +14,7 @@ const PostItem = () => {
     <View style={styles.postContainer}>
       <View style={styles.postPhotoWrap}>
         <Image
-          source={require("../assets/images/forest.png")}
+          source={require("../../assets/images/forest.png")}
           style={styles.postPhoto}
         />
         <TouchableOpacity style={styles.trashBtn} onPress={() => {}}>

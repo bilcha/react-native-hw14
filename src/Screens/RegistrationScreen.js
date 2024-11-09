@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -11,10 +11,14 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import { colors } from "../styles/global";
+import * as ImagePicker from "expo-image-picker";
+import { colors } from "../../styles/global";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { registerDB } from "../redux/reducers/authOperation";
+import { selectAuthError } from "../redux/reducers/authSelector";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -23,20 +27,24 @@ const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
   const navigation = useNavigation();
 
-  const handleNameChange = (value: string) => {
+  const dispatch = useDispatch();
+  const errorMessage = useSelector(selectAuthError);
+
+  const handleNameChange = (value) => {
     setName(value);
   };
-  const handleEmailChange = (value: string) => {
+  const handleEmailChange = (value) => {
     setEmail(value);
   };
-  const handlePasswordChange = (value: string) => {
+  const handlePasswordChange = (value) => {
     setPassword(value);
   };
   const showPassword = () => {
-    setIsSecure((prev: Boolean) => !prev);
+    setIsSecure((prev) => !prev);
   };
   const handleRegistration = () => {
     console.log(
@@ -47,16 +55,82 @@ const RegistrationScreen = () => {
       routes: [{ name: "Home" }],
     });
   };
+
   const passwordShow = (
     <TouchableOpacity onPress={showPassword}>
       <Text style={[styles.inputBtn, styles.mainText]}>Показати</Text>
     </TouchableOpacity>
   );
+  const addProfilePhoto = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      return Toast.show({
+        type: "info",
+        text1: "Ви відмовилися від доступ до ваших фотографій!",
+      });
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setProfilePhoto(result.assets[0].uri);
+    }
+  };
+  const register = () => {
+    if (!profilePhoto) {
+      return Toast.show({
+        type: "info",
+        text1: "Аватар є обовязковим",
+      });
+    }
+
+    if (!email && !password && !name) {
+      return Toast.show({
+        type: "info",
+        text1: "Всі поля повинни бути заповненні обовязково.",
+      });
+    }
+
+    if (email && password && name && profilePhoto) {
+      dispatch(
+        registerDB({
+          inputEmail: email,
+          inputPassword: password,
+          inputLogin: name,
+          profilePhoto,
+        })
+      ).then((response) => {
+        console.log("Response Type:", response.type);
+
+        if (response.type === "auth/signup/fulfilled") {
+          Toast.show({
+            type: "success",
+            text1: `${name}`,
+            text2: "Yay! Congrats, you join us!",
+          });
+          navigation.navigate("Login");
+          reset();
+        } else {
+          return Toast.show({
+            type: "error",
+            text1: "Oops! Something went wrong",
+            text2: `${errorMessage}`,
+          });
+        }
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/photoBG.png")}
+        source={require("../../assets/images/photoBG.png")}
         resizeMode="cover"
         style={styles.bgImage}
       />
@@ -66,7 +140,19 @@ const RegistrationScreen = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.inner}>
-            <View style={styles.photoContainer}></View>
+            <View style={styles.photoContainer}>
+              <Image
+                style={styles.profilePhoto}
+                source={{ uri: profilePhoto }}
+              />
+
+              <TouchableOpacity
+                onPress={addProfilePhoto}
+                style={styles.addIcon}
+              >
+                <Image source={profilePhoto} />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.inputContainer}>
               <InputField
@@ -100,9 +186,7 @@ const RegistrationScreen = () => {
               </Button>
               <Text style={[styles.mainText, styles.toLoginBtn]}>
                 Вже є акаунт?
-                <TouchableWithoutFeedback
-                  onPress={() => navigation.navigate("Login")}
-                >
+                <TouchableWithoutFeedback onPress={register}>
                   <Text style={[styles.mainText, styles.btnLink]}>Увійти</Text>
                 </TouchableWithoutFeedback>
               </Text>
@@ -148,6 +232,17 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: colors.inputBackground,
     borderRadius: 16,
+  },
+  profilePhoto: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    position: "relative",
+  },
+  addIcon: {
+    position: "absolute",
+    left: 107,
+    top: 80,
   },
   title: {
     color: colors.darkText,

@@ -1,5 +1,4 @@
 import { StyleSheet, Text, TouchableOpacity, ViewProps } from "react-native";
-import { colors } from "../styles/global";
 import { FC, ReactNode } from "react";
 
 type ButtonProps = {

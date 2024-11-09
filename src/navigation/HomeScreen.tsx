@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { colors } from "../styles/global";
+import { colors } from "../../styles/global";
 import ProfileScreen from "../Screens/ProfileScreen";
-import HomeIcon from "../icons/homeIcon";
-import LogoutIcon from "../icons/logoutIcon";
+import HomeIcon from "../../icons/homeIcon";
+import LogoutIcon from "../../icons/logoutIcon";
 import PostsScreen from "../Screens/PostsScreen";
 import { useNavigation } from "@react-navigation/native";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";

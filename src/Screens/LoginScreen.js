@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -11,35 +11,68 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import { colors } from "../styles/global";
+import { colors } from "../../styles/global";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
-import { useNavigation } from "@react-navigation/native";
+import { loginDB } from "../redux/reducers/authOperation";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuthError } from "../redux/reducers/authSelector";
+import Toast from "react-native-toast-message";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const errorMessage = useSelector(selectAuthError);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSecure, setIsSecure] = useState(true);
 
-  const navigation = useNavigation();
-
-  const handleEmailChange = (value: string) => {
+  const handleEmailChange = (value) => {
     setEmail(value);
   };
-  const handlePasswordChange = (value: string) => {
+
+  const handlePasswordChange = (value) => {
     setPassword(value);
+  };
+
+  const reset = () => {
+    setEmail("");
+    setPassword("");
+  };
+
+  const handleLogin = () => {
+    if (email && password) {
+      dispatch(
+        loginDB({
+          inputEmail: email,
+          inputPassword: password,
+        })
+      ).then((response) => {
+        if (response.type === "auth/login/fulfilled") {
+          Toast.show({
+            type: "success",
+            text1: `${email}`,
+            text2: "You are successfully log in",
+          });
+          reset();
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          });
+        } else {
+          return Toast.show({
+            type: "error",
+            text1: "Oops! Something went wrong.",
+            text2: `${errorMessage}`,
+          });
+        }
+      });
+    }
   };
   const showPassword = () => {
     setIsSecure((prev) => !prev);
-  };
-  const handleLogin = () => {
-    console.log(`LoginData: email: ${email}, password: ${password}`);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
   };
   const passwordShow = (
     <TouchableOpacity onPress={showPassword}>
@@ -50,7 +83,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/photoBG.png")}
+        source={require("../../assets/images/photoBG.png")}
         resizeMode="cover"
         style={styles.bgImage}
       />

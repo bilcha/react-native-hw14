@@ -21,7 +21,7 @@ import * as Location from "expo-location";
 import * as MediaLibrary from "expo-media-library";
 
 import Button from "../components/Button";
-import { colors } from "../styles/global";
+import { colors } from "../../styles/global";
 
 interface GeoLocation {
   latitude: number;
@@ -61,9 +61,6 @@ export default function CreatePostsScreen() {
       } else {
         setHasPermission(true);
       }
-
-      console.log("Camera Permission:", cameraPermission.status);
-      console.log("Media Library Permission:", mediaLibraryPermission.status);
     })();
   }, []);
 
